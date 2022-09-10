@@ -1,6 +1,19 @@
 version: '3'
 
 services:
+  frontend:
+    image: frontend:trabalho-final
+    build:
+      context: library_front
+      dockerfile: Dockerfile
+    volumes:
+      - './library_front:/library_front'
+      - '/library_front/node_modules/'
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+
   backend:
     image: backend:trabalho-final
     build:
