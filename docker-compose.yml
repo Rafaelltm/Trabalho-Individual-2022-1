@@ -1,6 +1,20 @@
 version: '3'
 
 services:
+  backend:
+    image: backend:trabalho-final
+    build:
+      context: library_back
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_HOST: db
+    volumes:
+      - './library_back:/library_back'
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+
   db:
     image: postgres:12
     environment:
