@@ -25,3 +25,4 @@ class Book(models.Model):
                 name='unique_together_book_keys',
             )
         ]
+

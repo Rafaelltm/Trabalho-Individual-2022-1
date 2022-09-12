@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 import unittest
 from .models import Book
 from .serializers import BookSerializer
@@ -34,3 +33,4 @@ class BookTests(unittest.TestCase):
 
         self.assertFalse(serializer.is_valid())
         self.assertEqual(set(serializer.errors), set(['release_year']))
+
