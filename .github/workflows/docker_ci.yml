@@ -44,7 +44,7 @@ jobs:
       run: docker-compose up -d
     - name: Run Tests Backend
       run: |
-        docker exec trabalho-individual-2022-1_api_1 bash -c "python ./manage.py test"
+        docker exec trabalho-individual-2022-1_backend_1 bash -c "python ./manage.py test"
     - name: Run Tests Frontend
       run: |
         docker exec trabalho-individual-2022-1_library_front_1 npm run test
