@@ -8,13 +8,13 @@ on:
 
 jobs:
 
-  build:
+  CI:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - name: Criando arquivo .env
+    - name: Build
       working-directory: ./library_back
       run: |
         echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
@@ -23,52 +23,23 @@ jobs:
         echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
         echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
         cat .env
-    - name: Build and run Docker Compose
-      run: docker-compose up -d --build
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Criando arquivo .env
+        docker-compose up -d --build
+    - name: Test backend
       working-directory: ./library_back
-      run: |
-        echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-        echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-        echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-        echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
-        echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
-        cat .env
-    - name: Build and run Docker Compose
-      run: docker-compose up -d
-    - name: Run Tests Backend
       run: |
         docker exec trabalho-individual-2022-1_backend_1 bash -c "python ./manage.py test"
-    - name: Run Tests Frontend
+    - name: Test frontend
+      working-directtory: /.library_front
       run: |
         docker exec trabalho-individual-2022-1_library_front_1 npm run test
-  lint: 
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Criando arquivo .env
-        working-directory: ./library_back
-        run: |
-          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-          echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
-          echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
-          cat .env
-      - name: Instalacao do lint
-        working-directory: ./
-        run: bash -c "pip install flake8"
-      - name: Executando lint para o backend
-        working-directory: ./
-        run: bash -c "flake8 --ignore=E123,E302,W291,W292,W293,E713,W391 --max-line-length=200 library_back"
-      - name: Executando lint para o frontend
-        working-directory: ./
-        run: bash -c "flake8 --max-line-length=200 library_front"
+    - name: Instalando Lint
+      working-directory: ./
+      run: |
+        bash -c "pip install flake8"
+    - name: Lint backend
+      working-directory: ./
+      run: |
+        bash -c "flake8 --ignore=E123,E302,W291,W292,W293,E713,W391 --max-line-length=200 library_back"
+    - name: Lint frontend
+      working-directory: ./
+      run: bash -c "flake8 --max-line-length=200 library_front"
